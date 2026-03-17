@@ -29,6 +29,8 @@ class LlamaChatClientTests(unittest.TestCase):
         self.assertEqual(payload["max_tokens"], LLAMA_MAX_TOKENS)
         self.assertEqual(payload["temperature"], LLAMA_TEMPERATURE)
         self.assertEqual(payload["top_p"], LLAMA_TOP_P)
+        self.assertEqual(payload["reasoning_format"], "none")
+        self.assertEqual(payload["chat_template_kwargs"], {"enable_thinking": False})
 
 
 if __name__ == "__main__":

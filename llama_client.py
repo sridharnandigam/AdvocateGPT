@@ -30,6 +30,8 @@ class LlamaChatClient:
             "max_tokens": LLAMA_MAX_TOKENS,
             "temperature": LLAMA_TEMPERATURE,
             "top_p": LLAMA_TOP_P,
+            "reasoning_format": "none",
+            "chat_template_kwargs": {"enable_thinking": False},
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_message},
@@ -41,7 +43,13 @@ class LlamaChatClient:
             json=payload,
             timeout=self.timeout,
         )
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.HTTPError as exc:
+            details = response.text.strip() or str(exc)
+            raise RuntimeError(
+                f"llama-server returned HTTP {response.status_code}: {details}"
+            ) from exc
 
         data = response.json()
         try:
